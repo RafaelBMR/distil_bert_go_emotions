@@ -1,0 +1,62 @@
+stages:
+  load_data:
+    cmd: >
+      python src/load_data.py
+      --input-path ${load_data.input_path}
+      --output-path ${load_data.output_path}
+      --samples-limit ${load_data.samples_limit}
+
+    params:
+      - load_data
+
+    deps:
+      - ${load_data.input_path}
+
+    outs:
+      - ${load_data.output_path}:
+          cache: false
+
+  train_model:
+    cmd: >
+      python distil_bert/src/train.py
+      --dataset-path ${load_data.output_path}
+      --model-name-or-path ${train_model.model_name_or_path}
+      --max-length ${train_model.max_length}
+      --learning-rate ${train_model.learning_rate}
+      --warm-up-steps ${train_model.warm_up_steps}
+      --batch-size ${train_model.batch_size}
+      --epochs ${train_model.epochs}
+      --device ${train_model.device}
+      --output-path ${train_model.output_path}
+
+    params:
+      - load_data.output_path
+      - train_model
+
+    deps:
+      - ${load_data.output_path}
+
+    outs:
+      - ${train_model.output_path}:
+          cache: false
+
+  # copy_model:
+  #   cmd: >
+  #     python src/copy_model.py
+  #     --input-path ${train_model.output_path}
+  #     --output-path ${copy_model.output_path}
+
+  #   params:
+  #     - train_model.output_path
+  #     - copy_model
+
+  #   deps:
+  #     - ${train_model.output_path}
+
+  #   outs:
+  #     - ${copy_model.output_path}:
+  #         cache: false
+
+
+
+

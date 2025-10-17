@@ -1,0 +1,70 @@
+schema: '2.0'
+stages:
+  load_data:
+    cmd: "python src/load_data.py --input-path go-emotions-dataset/data/model_data
+      --output-path input_data --samples-limit 0\n"
+    deps:
+    - path: go-emotions-dataset/data/model_data
+      hash: md5
+      md5: f9db823c598decd76fbc04de1b70fd96.dir
+      size: 5976250
+      nfiles: 5
+    params:
+      params.yaml:
+        load_data:
+          input_path: go-emotions-dataset/data/model_data
+          output_path: input_data
+          samples_limit: 0
+    outs:
+    - path: input_data
+      hash: md5
+      md5: 6af7b5e9efefaf07eab0762ed29eed02.dir
+      size: 3627366
+      nfiles: 4
+  train_model:
+    cmd: "python distil_bert/src/train.py --dataset-path input_data --model-name-or-path
+      distilbert-base-uncased --max-length 64 --learning-rate 5e-5 --warm-up-steps
+      1000 --batch-size 10 --epochs 4 --device cpu --output-path output\n"
+    deps:
+    - path: input_data
+      hash: md5
+      md5: 6af7b5e9efefaf07eab0762ed29eed02.dir
+      size: 3627366
+      nfiles: 4
+    params:
+      params.yaml:
+        load_data.output_path: input_data
+        train_model:
+          model_name_or_path: distilbert-base-uncased
+          max_length: 64
+          learning_rate: '5e-5'
+          warm_up_steps: 1000
+          batch_size: 10
+          epochs: 4
+          device: cpu
+          output_path: output
+    outs:
+    - path: output
+      hash: md5
+      md5: 0c65fb26694016f82a398ccd80645647.dir
+      size: 268995213
+      nfiles: 8
+  copy_model:
+    cmd: "python src/copy_model.py --input-path dev_output --output-path dev_trained_classifier\n"
+    deps:
+    - path: dev_output
+      hash: md5
+      md5: ff72ae5c59311c678a3abd03e4d13470.dir
+      size: 268991454
+      nfiles: 8
+    params:
+      params.yaml:
+        copy_model:
+          output_path: dev_trained_classifier
+        train_model.output_path: dev_output
+    outs:
+    - path: dev_trained_classifier
+      hash: md5
+      md5: ff72ae5c59311c678a3abd03e4d13470.dir
+      size: 268991454
+      nfiles: 8

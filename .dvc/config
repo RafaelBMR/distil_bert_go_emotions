@@ -1,0 +1,6 @@
+[core]
+    remote = hf_remote
+[cache]
+    type = copy
+['remote "hf_remote"']
+    url = https://huggingface.co/RafaelBMR/distilbert-go-emotions

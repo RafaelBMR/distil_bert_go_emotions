@@ -1,0 +1,17 @@
+load_data:
+  input_path: "go-emotions-dataset/data/model_data"
+  output_path: "input_data"
+  samples_limit: 0
+
+train_model:
+  model_name_or_path: "distilbert-base-uncased"
+  max_length: 64
+  learning_rate: "5e-5"
+  warm_up_steps: 1000
+  batch_size: 10
+  epochs: 4
+  device: "cpu"
+  output_path: "output"
+
+copy_model:
+  output_path: "trained_classifier"

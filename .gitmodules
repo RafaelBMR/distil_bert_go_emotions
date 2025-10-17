@@ -1,0 +1,6 @@
+[submodule "go-emotions-dataset"]
+	path = go-emotions-dataset
+	url = ./go-emotions-dataset/
+[submodule "distil_bert"]
+	path = distil_bert
+	url = ./distil_bert/
