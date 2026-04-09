@@ -1,7 +1,7 @@
 stages:
   load_data:
     cmd: >
-      python src/load_data.py
+      python -m src.load_data
       --input-path ${load_data.input_path}
       --output-path ${load_data.output_path}
       --samples-limit ${load_data.samples_limit}
@@ -18,7 +18,7 @@ stages:
 
   train_model:
     cmd: >
-      python distil_bert/src/train.py
+      python -m distil_bert.src.train
       --dataset-path ${load_data.output_path}
       --model-name-or-path ${train_model.model_name_or_path}
       --max-length ${train_model.max_length}
@@ -42,7 +42,7 @@ stages:
 
   # copy_model:
   #   cmd: >
-  #     python src/copy_model.py
+  #     python -m src.copy_model.py
   #     --input-path ${train_model.output_path}
   #     --output-path ${copy_model.output_path}
 
