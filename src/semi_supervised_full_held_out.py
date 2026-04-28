@@ -157,7 +157,11 @@ def main(args):
     later_usage = []
     already_added = set()
     # For each class
-    for label, _ in sorted(classes_occurrences.items(), key=lambda x: x[1]):
+    for label, train_occurrence in sorted(classes_occurrences.items(), key=lambda x: x[1]):
+        # If user wants to skip the most frequent classes, check current class
+        # occurrence and skips it if it exceeds the chose maximum frequency
+        if args.maximum_frequency > 0 and train_occurrence > args.maximum_frequency:
+            continue
         label_id = class2id[label]
         # Get threshold that corresponds to minimum precision
         minimum_threshold = _get_precision_threshold(label,
@@ -267,8 +271,21 @@ if __name__ == '__main__':
 
     parser.add_argument("--minimum-precision", default=0.95, type=float)
     parser.add_argument("--backup-precision", default=0.75, type=float)
+
     # Min samples per class
     parser.add_argument("--min-samples", default=50, type=int)
+
+    # Maximum frequency
+    parser.add_argument("--maximum-frequency", 
+                        default=0,
+                        type=int,
+                        help="Maximum frequency of samples of a class to look "
+                             "for additional data. For example, if maximum "
+                             "frequency is 300, a class that occurs 100 times "
+                             "in the training data will have new samples, while "
+                             "a class that occurs 700 times won't be targeted. "
+                             "0 (default value) indicates to ignre this parameter "
+                             "and look for additional data considering all classes.")
 
     parser.add_argument("--training-data-path")
     parser.add_argument("--held-out-data-path")
